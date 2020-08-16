@@ -6,7 +6,10 @@
   "author": "Jesse Luoto <jesse.luoto@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "start": "ts-node index.ts"
+    "start": "ts-node src/index.ts",
+    "start:parallel": "seq 50 | parallel -j 5 yarn -s start",
+    "init": "yarn init:download-wordnet-data",
+    "init:download-wordnet-data": "curl https://korp.csc.fi/download/FinnWordNet/v2.0/FinnWordNet-2.0.zip > FinnWordNet-2.0.zip && unzip FinnWordNet-2.0.zip && rm FinnWordNet-2.0.zip"
   },
   "devDependencies": {
     "@types/node": "^12.7.12",
@@ -14,5 +17,9 @@
     "ts-node": "^8.4.1",
     "typescript": "^3.6.3"
   },
-  "dependencies": {}
+  "dependencies": {},
+  "prettier": {
+    "semi": false,
+    "trailingComma": "none"
+  }
 }

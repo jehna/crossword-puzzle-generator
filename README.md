@@ -16,10 +16,11 @@ To run the project, first install dependencies:
 
 ```
 yarn
+yarn init
 ```
 
 This installs all needed dependencies (mostly just TypeScript) with Yarn package
-manager.
+manager and downloads the Finnish WordNet data.
 
 After the installation has succeeded, you can run the generator:
 
