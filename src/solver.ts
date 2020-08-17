@@ -1,8 +1,13 @@
 import words from "../words.json"
 import assert from "assert"
-import { Direction, EmptyPosition, StartPosition } from "./board"
+import {
+  Direction,
+  EmptyPosition,
+  EmptyBoardPositions,
+  StartPositionBoard
+} from "./board"
 
-const MAX_TIME_MS = 10000
+const MAX_TIME_MS = 30000
 const wordIndices = words.map((_, i) => i)
 
 type ProgressPosition = EmptyPosition & {
@@ -11,10 +16,10 @@ type ProgressPosition = EmptyPosition & {
   selectedWordIndex: undefined | number
 }
 
-export function solve(empty: EmptyPosition[]): StartPosition[] {
+export function solve(empty: EmptyBoardPositions): StartPositionBoard {
   let iterations = 0
   const startTime = Date.now()
-  const positions: ProgressPosition[] = empty
+  const positions: ProgressPosition[] = empty.data
     .map((p) => ({
       ...p,
       possibleWordsIndices: wordIndices.filter(
@@ -47,12 +52,16 @@ export function solve(empty: EmptyPosition[]): StartPosition[] {
       p.selectedWordIndex = undefined
     })
 
-    while (positions.some((p) => p.selectedWordIndex === undefined)) {
+    while (
+      positions.some((p) => p.selectedWordIndex === undefined && p.length !== 1)
+    ) {
       positions.sort(
         (a, b) => a.possibleWordsIndices.length - b.possibleWordsIndices.length
       )
 
-      const closest = positions.find((p) => p.selectedWordIndex === undefined)!
+      const closest = positions.find(
+        (p) => p.selectedWordIndex === undefined && p.length !== 1
+      )!
       const possibleWordsIndices = closest.possibleWordsIndices
       const randomIndex =
         possibleWordsIndices[
@@ -71,9 +80,10 @@ export function solve(empty: EmptyPosition[]): StartPosition[] {
         }
 
         const pos = positionsMap[`${x},${y},${dir}`]
-        assert(pos)
+        assert(pos, `${x},${y},${dir}`)
 
         if (pos.position.selectedWordIndex !== undefined) {
+          if (pos.position.length === 1) continue
           assert.strictEqual(
             words[pos.position.selectedWordIndex][pos.index],
             words[closest.selectedWordIndex!][i]
@@ -87,19 +97,24 @@ export function solve(empty: EmptyPosition[]): StartPosition[] {
             words[wi][pos.index] === words[closest.selectedWordIndex!][i]
         )
 
+        if (pos.position.length === 1) continue
         if (pos.position.possibleWordsIndices.length === 0) continue main
       }
     }
-    return positions.map(
-      ({ direction, length, position, selectedWordIndex }) => ({
-        direction,
-        length,
-        position,
-        word: words[selectedWordIndex!]
-      })
-    )
+    return {
+      data: positions.map(
+        ({ direction, length, position, selectedWordIndex }) => ({
+          direction,
+          length,
+          position,
+          word: words[selectedWordIndex!]
+        })
+      ),
+      width: empty.width,
+      height: empty.height
+    }
   }
 
   console.error(`No solution found in ${iterations} iterations`)
-  return process.exit(0) as []
+  return process.exit(0) as any
 }
