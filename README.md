@@ -8,6 +8,9 @@ WordNet data, so you can substitute the data with any language's own WordNet
 files to get localized results. Uses
 [FinnWordNet](https://www.kielipankki.fi/corpora/finnwordnet/) by default.
 
+This project is tightly coupled to produce levels for this project:
+https://github.com/jehna/crossword-puzzle-game
+
 **Note:** This project is still under initial development
 
 ## Getting started
@@ -20,7 +23,8 @@ yarn init
 ```
 
 This installs all needed dependencies (mostly just TypeScript) with Yarn package
-manager and downloads the Finnish WordNet data.
+manager, downloads the Finnish WordNet data, and sanitizes the wordnet for best
+words as a cached JSON file.
 
 After the installation has succeeded, you can run the generator:
 

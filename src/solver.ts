@@ -1,4 +1,4 @@
-import words from "../words.json"
+import words from "../words_sanitized.json"
 import assert from "assert"
 import {
   Direction,

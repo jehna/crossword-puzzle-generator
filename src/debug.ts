@@ -1,10 +1,5 @@
-import {
-  StartPosition,
-  EmptyPosition,
-  EmptyBoardPositions,
-  BoardItem,
-  StartPositionBoard
-} from "./board"
+import { EmptyBoardPositions, BoardItem, StartPositionBoard } from "./board"
+import crypto from "crypto"
 
 export function printEmptyBoard(board: EmptyBoardPositions) {
   const data: string[] = Array(board.width * board.height).fill(BoardItem.BLOCK)
@@ -64,4 +59,30 @@ export function printVertical(board: StartPositionBoard) {
     )
   }
   return ret.join("\n")
+}
+
+type Exportable = {
+  charIndices: number[]
+  width: number
+  height: number
+  hash: string
+  solved: { [index: number]: string }
+}
+
+export function toExportable(board: StartPositionBoard) {
+  const chars = printHorizontal(board)
+    .split("")
+    .filter((c) => c !== BoardItem.BLOCK && c !== "\n")
+  const charMap = [...new Set(chars)].sort(() => Math.random() - 0.5)
+  const exportable: Exportable = {
+    charIndices: chars.map((c) => charMap.indexOf(c)),
+    width: board.width - 1,
+    height: board.height - 1,
+    hash: crypto.createHash("sha256").update(chars.join("")).digest("hex"),
+    solved: charMap.reduce(
+      (all, char, index) => Object.assign(all, { [index]: char }),
+      {}
+    )
+  }
+  return exportable
 }

@@ -8,8 +8,9 @@
   "scripts": {
     "start": "ts-node src/index.ts",
     "start:parallel": "seq 50 | parallel -j 5 yarn -s start",
-    "init": "yarn init:download-wordnet-data",
-    "init:download-wordnet-data": "curl https://korp.csc.fi/download/FinnWordNet/v2.0/FinnWordNet-2.0.zip > FinnWordNet-2.0.zip && unzip FinnWordNet-2.0.zip && rm FinnWordNet-2.0.zip"
+    "init": "yarn init:download-wordnet-data && init:sanitize",
+    "init:download-wordnet-data": "curl https://korp.csc.fi/download/FinnWordNet/v2.0/FinnWordNet-2.0.zip > FinnWordNet-2.0.zip && unzip FinnWordNet-2.0.zip && rm FinnWordNet-2.0.zip",
+    "init:sanitize": "node extract-sanitized.js"
   },
   "devDependencies": {
     "@types/node": "^12.7.12",
